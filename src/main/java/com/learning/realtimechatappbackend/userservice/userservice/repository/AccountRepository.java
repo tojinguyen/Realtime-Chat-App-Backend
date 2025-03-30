@@ -1,6 +1,6 @@
 package com.learning.realtimechatappbackend.userservice.userservice.repository;
 
-import com.learning.userservice.userservice.model.UserAccount;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

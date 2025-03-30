@@ -1,7 +1,7 @@
 package com.learning.realtimechatappbackend.userservice.userservice.repository;
 
-import com.learning.userservice.userservice.enums.VerificationType;
-import com.learning.userservice.userservice.model.VerificationCode;
+import com.learning.realtimechatappbackend.userservice.userservice.enums.VerificationType;
+import com.learning.realtimechatappbackend.userservice.userservice.model.VerificationCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;

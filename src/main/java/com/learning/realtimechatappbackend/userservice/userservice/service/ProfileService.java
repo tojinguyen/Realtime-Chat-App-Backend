@@ -3,15 +3,14 @@ package com.learning.realtimechatappbackend.userservice.userservice.service;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import com.learning.realtimechatappbackend.userservice.userservice.dto.request.CreateProfileRequest;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserAddress;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserProfile;
+import com.learning.realtimechatappbackend.userservice.userservice.repository.AccountRepository;
+import com.learning.realtimechatappbackend.userservice.userservice.repository.ProfileRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.learning.realtimechatappbackend.userservice.dto.request.CreateProfileRequest;
-import com.learning.realtimechatappbackend.userservice.model.UserAddress;
-import com.learning.realtimechatappbackend.userservice.model.UserProfile;
-import com.learning.realtimechatappbackend.userservice.repository.AccountRepository;
-import com.learning.realtimechatappbackend.userservice.repository.ProfileRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -20,7 +19,6 @@ import lombok.AllArgsConstructor;
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final AccountRepository accountRepository;
-    private final GoogleCloudStorageService googleCloudStorageService;
 
     public UserProfile createProfile(String userId, CreateProfileRequest createProfileRequest) {
         var userAccountOpt = accountRepository.findById(userId);
@@ -32,12 +30,10 @@ public class ProfileService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile already exists");
         }
 
-        var avtUrl = googleCloudStorageService.uploadFile(createProfileRequest.getAvatar());
-
         var profile = new UserProfile();
         profile.setUserId(userId);
         profile.setName(createProfileRequest.getName());
-        profile.setAvatarUrl(avtUrl);
+        profile.setAvatarUrl("avtUrl"); //TODO: upload file to GCS
         profile.setAddresses(createProfileRequest.getAddresses().stream()
                 .map(addressRequest -> new UserAddress(profile, addressRequest.getStreet(), addressRequest.getCity(),
                         addressRequest.getState(), addressRequest.getPostalCode()))

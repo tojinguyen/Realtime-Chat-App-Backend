@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.redisservice.service;
+package com.learning.userservice.redisservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

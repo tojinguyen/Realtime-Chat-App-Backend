@@ -1,8 +1,5 @@
-package com.learning.realtimechatappbackend.userservice.service;
+package com.learning.realtimechatappbackend.userservice.userservice.service;
 
-import com.learning.userservice.userservice.enums.VerificationType;
-import com.learning.userservice.userservice.model.VerificationCode;
-import com.learning.userservice.userservice.repository.VerificationCodeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

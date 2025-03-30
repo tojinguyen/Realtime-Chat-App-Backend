@@ -68,7 +68,7 @@ public class UserAddress {
     }
 
     // Constructor for updating an address (used in updateProfile method)
-    public UserAddress(String street, String city, String state, String postalCode, UserProfile userProfile) {
+    public UserAddress(String street, String city, String state, String postalCode, com.learning.realtimechatappbackend.userservice.model.UserProfile userProfile) {
         this.street = street;
         this.city = city;
         this.state = state;

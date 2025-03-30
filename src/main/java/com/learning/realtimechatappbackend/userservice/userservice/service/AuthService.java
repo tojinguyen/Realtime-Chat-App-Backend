@@ -5,24 +5,23 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.learning.realtimechatappbackend.userservice.redisservice.service.BaseRedisService;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.request.LoginRequest;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.request.ResetPasswordRequest;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.request.VerifyRegisterCodeRequest;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.response.ApiResponse;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.response.AuthenticationResponse;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.response.ResetPasswordResponse;
+import com.learning.realtimechatappbackend.userservice.userservice.enums.VerificationType;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
+import com.learning.realtimechatappbackend.userservice.userservice.repository.AccountRepository;
+import com.learning.realtimechatappbackend.userservice.userservice.repository.VerificationCodeRepository;
+import com.learning.realtimechatappbackend.userservice.userservice.security.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.learning.userservice.redisservice.service.BaseRedisService;
-import com.learning.userservice.userservice.dto.request.LoginRequest;
-import com.learning.userservice.userservice.dto.request.ResetPasswordRequest;
-import com.learning.userservice.userservice.dto.request.VerifyRegisterCodeRequest;
-import com.learning.userservice.userservice.dto.response.ApiResponse;
-import com.learning.userservice.userservice.dto.response.AuthenticationResponse;
-import com.learning.userservice.userservice.dto.response.ResetPasswordResponse;
-import com.learning.userservice.userservice.enums.VerificationType;
-import com.learning.userservice.userservice.model.UserAccount;
-import com.learning.userservice.userservice.repository.AccountRepository;
-import com.learning.userservice.userservice.repository.VerificationCodeRepository;
-import com.learning.userservice.userservice.security.JwtUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +38,7 @@ public class AuthService {
 
     private final JwtUtils jwtTokenProvider;
 
-    private final com.learning.realtimechatappbackend.userservice.service.VerificationCodeService verificationCodeService;
+    private final VerificationCodeService verificationCodeService;
 
     private final BaseRedisService baseRedisService;
 

@@ -1,6 +1,6 @@
 package com.learning.realtimechatappbackend.userservice.userservice.model;
 
-import com.learning.userservice.userservice.enums.VerificationType;
+import com.learning.realtimechatappbackend.userservice.userservice.enums.VerificationType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
