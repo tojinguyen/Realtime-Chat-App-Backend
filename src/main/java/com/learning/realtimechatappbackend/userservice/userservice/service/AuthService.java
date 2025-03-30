@@ -70,6 +70,7 @@ public class AuthService {
         user.setUserId(UUID.randomUUID().toString());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setFullName(registerRequest.getFullName());
         user.setRole("USER");
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
@@ -78,7 +79,14 @@ public class AuthService {
 
         var accessToken = jwtTokenProvider.generateAccessToken(user);
         var refreshToken = jwtTokenProvider.generateRefreshToken(user);
-        var authResponse = new AuthenticationResponse(accessToken, refreshToken);
+        var authResponse = AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .email(user.getEmail())
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .build();
 
         return ApiResponse.<AuthenticationResponse>builder().success(true).message("User created successfully")
                 .data(authResponse).build();
@@ -129,7 +137,14 @@ public class AuthService {
 
         var accessToken = jwtTokenProvider.generateAccessToken(user);
         var refreshToken = jwtTokenProvider.generateRefreshToken(user);
-        var authResponse = new AuthenticationResponse(accessToken, refreshToken);
+        var authResponse = AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .email(user.getEmail())
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .build();
 
         return ApiResponse.<AuthenticationResponse>builder().success(true).message("Login Success").data(authResponse)
                 .build();
@@ -158,24 +173,6 @@ public class AuthService {
     }
     // EndRegion
 
-    // Region: Google Login
-    public void processOAuthPostLogin(String email) {
-        Optional<UserAccount> existUser = userRepository.findByEmail(email);
-        if (existUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
-        } else {
-            var newUserAccount = new UserAccount();
-            var now = Instant.now();
-
-            newUserAccount.setEmail(email);
-            newUserAccount.setCreatedAt(now);
-            newUserAccount.setUpdatedAt(now);
-
-            userRepository.save(newUserAccount);
-        }
-    }
-    // EndRegion
-
     // Region: Refresh Token
     @Transactional
     public ApiResponse<AuthenticationResponse> refreshToken(String refreshToken) {
@@ -201,7 +198,14 @@ public class AuthService {
             var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
 
             // Create the authentication response
-            var authenticationResponse = new AuthenticationResponse(newAccessToken, newRefreshToken);
+            var authenticationResponse = AuthenticationResponse.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .email(user.getEmail())
+                    .userId(user.getUserId())
+                    .fullName(user.getFullName())
+                    .role(user.getRole())
+                    .build();
 
             // Return the response with new tokens
             return ApiResponse.<AuthenticationResponse>builder()

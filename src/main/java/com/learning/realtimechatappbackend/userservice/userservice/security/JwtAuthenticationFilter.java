@@ -20,7 +20,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private com.learning.realtimechatappbackend.userservice.security.JwtUtils jwtUtil;
+    private JwtUtils jwtUtil;
 
     private UserDetailsService userDetailsService;
 

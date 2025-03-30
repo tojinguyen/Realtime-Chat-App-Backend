@@ -26,6 +26,9 @@ public class UserAccount {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
     @Column(name = "role", nullable = false)
     private String role;
 

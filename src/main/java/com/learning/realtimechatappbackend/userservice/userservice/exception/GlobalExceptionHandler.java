@@ -2,12 +2,12 @@ package com.learning.realtimechatappbackend.userservice.userservice.exception;
 
 import java.util.Objects;
 
+import com.learning.realtimechatappbackend.userservice.userservice.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.learning.userservice.userservice.dto.response.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
