@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.service;
+package com.learning.realtimechatappbackend.userservice.service;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.learning.userservice.userservice.dto.request.CreateProfileRequest;
-import com.learning.userservice.userservice.model.UserAddress;
-import com.learning.userservice.userservice.model.UserProfile;
-import com.learning.userservice.userservice.repository.AccountRepository;
-import com.learning.userservice.userservice.repository.ProfileRepository;
+import com.learning.realtimechatappbackend.userservice.dto.request.CreateProfileRequest;
+import com.learning.realtimechatappbackend.userservice.model.UserAddress;
+import com.learning.realtimechatappbackend.userservice.model.UserProfile;
+import com.learning.realtimechatappbackend.userservice.repository.AccountRepository;
+import com.learning.realtimechatappbackend.userservice.repository.ProfileRepository;
 
 import lombok.AllArgsConstructor;
 

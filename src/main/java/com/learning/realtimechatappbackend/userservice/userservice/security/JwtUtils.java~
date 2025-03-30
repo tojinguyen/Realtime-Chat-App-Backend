@@ -1,4 +1,3 @@
-package com.learning.realtimechatappbackend.userservice.security;
 
 import com.learning.userservice.userservice.model.UserAccount;
 import io.jsonwebtoken.*;

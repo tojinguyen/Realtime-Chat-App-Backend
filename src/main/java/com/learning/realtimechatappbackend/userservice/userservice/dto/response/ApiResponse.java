@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.dto.response;
+package com.learning.realtimechatappbackend.userservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

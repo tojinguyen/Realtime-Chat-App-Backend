@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.security;
+package com.learning.realtimechatappbackend.userservice.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

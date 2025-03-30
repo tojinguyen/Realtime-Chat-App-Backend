@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.service;
+package com.learning.realtimechatappbackend.userservice.service;
 
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;

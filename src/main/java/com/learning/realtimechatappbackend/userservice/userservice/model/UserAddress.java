@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.model;
+package com.learning.realtimechatappbackend.userservice.model;
 
 import java.util.UUID;
 

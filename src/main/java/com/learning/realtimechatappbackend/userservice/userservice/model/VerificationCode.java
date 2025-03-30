@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.model;
+package com.learning.realtimechatappbackend.userservice.model;
 
 import com.learning.userservice.userservice.enums.VerificationType;
 import jakarta.persistence.*;

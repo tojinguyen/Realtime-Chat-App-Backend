@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.exception;
+package com.learning.realtimechatappbackend.userservice.exception;
 
 import java.util.Objects;
 
