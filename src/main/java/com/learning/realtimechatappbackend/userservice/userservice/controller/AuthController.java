@@ -1,9 +1,5 @@
-package com.learning.userservice.userservice.controller;
+package com.learning.realtimechatappbackend.userservice.userservice.controller;
 
-import com.learning.userservice.userservice.dto.request.*;
-import com.learning.userservice.userservice.dto.response.*;
-import com.learning.userservice.userservice.service.AuthService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,28 +13,28 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 @CrossOrigin
 public class AuthController {
-    private final AuthService authService;
+    private final com.learning.realtimechatappbackend.userservice.service.AuthService authService;
 
     //Region:  Register
     @PostMapping("/send-register-code")
-    public ResponseEntity<ApiResponse<SendRegisterVerifyCodeResponse>> sendVerificationCode(
-            @Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.SendRegisterVerifyCodeResponse>> sendVerificationCode(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.RegisterRequest registerRequest) {
         try {
             authService.sendRegisterVerificationCode(registerRequest.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<SendRegisterVerifyCodeResponse>builder()
+            return ResponseEntity.status(HttpStatus.CREATED).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.SendRegisterVerifyCodeResponse>builder()
                     .success(true)
                     .message("Verification code sent successfully")
-                    .data(new SendRegisterVerifyCodeResponse("Verification code sent to " + registerRequest.getEmail()))
+                    .data(new com.learning.realtimechatappbackend.userservice.dto.response.SendRegisterVerifyCodeResponse("Verification code sent to " + registerRequest.getEmail()))
                     .build());
         } catch (ResponseStatusException e) {
             log.error("Failed to send verification code: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<SendRegisterVerifyCodeResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.SendRegisterVerifyCodeResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error when sending verification code: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<SendRegisterVerifyCodeResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.SendRegisterVerifyCodeResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -46,19 +42,19 @@ public class AuthController {
     }
 
     @PostMapping("/verify-register-code")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> verify(
-            @Valid @RequestBody VerifyRegisterCodeRequest verifyRegisterCodeRequest) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>> verify(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.VerifyRegisterCodeRequest verifyRegisterCodeRequest) {
         try {
             return ResponseEntity.ok(authService.verifyAndCreateUser(verifyRegisterCodeRequest));
         } catch (ResponseStatusException e) {
             log.error("Verification failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error during verification: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -68,19 +64,19 @@ public class AuthController {
 
     //Region:  Login
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(
-            @Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>> login(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.LoginRequest loginRequest) {
         try {
             return ResponseEntity.ok(authService.login(loginRequest));
         } catch (ResponseStatusException e) {
             log.error("Login failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error during login: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -90,24 +86,24 @@ public class AuthController {
 
     //Region:  Reset Password
     @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword(
-            @Valid @RequestBody ForgotPasswordRequest email) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.ForgotPasswordResponse>> forgotPassword(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.ForgotPasswordRequest email) {
         try {
             authService.sendResetPasswordVerificationCode(email.getEmail());
-            return ResponseEntity.ok(ApiResponse.<ForgotPasswordResponse>builder()
+            return ResponseEntity.ok(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.ForgotPasswordResponse>builder()
                     .success(true)
                     .message("Verification code sent successfully")
-                    .data(new ForgotPasswordResponse("Verification code sent to " + email.getEmail()))
+                    .data(new com.learning.realtimechatappbackend.userservice.dto.response.ForgotPasswordResponse("Verification code sent to " + email.getEmail()))
                     .build());
         } catch (ResponseStatusException e) {
             log.error("Failed to send reset password code: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<ForgotPasswordResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.ForgotPasswordResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error when sending reset password code: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<ForgotPasswordResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.ForgotPasswordResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -115,20 +111,20 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse<ResetPasswordResponse>> resetPassword(
-            @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.ResetPasswordResponse>> resetPassword(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.ResetPasswordRequest resetPasswordRequest) {
         try {
             var response = authService.resetPassword(resetPasswordRequest);
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
             log.error("Reset password failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<ResetPasswordResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.ResetPasswordResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error during password reset: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<ResetPasswordResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.ResetPasswordResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -138,24 +134,24 @@ public class AuthController {
 
     //Region:  Logout
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<LogoutResponse>> logout(
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.LogoutResponse>> logout(
             @RequestHeader("Authorization") String token) {
         try {
             authService.logout(token);
-            return ResponseEntity.ok(ApiResponse.<LogoutResponse>builder()
+            return ResponseEntity.ok(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.LogoutResponse>builder()
                     .success(true)
                     .message("Logout successful")
-                    .data(new LogoutResponse("Logout successful"))
+                    .data(new com.learning.realtimechatappbackend.userservice.dto.response.LogoutResponse("Logout successful"))
                     .build());
         } catch (ResponseStatusException e) {
             log.error("Logout failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<LogoutResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.LogoutResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error during logout: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<LogoutResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.LogoutResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());
@@ -165,19 +161,19 @@ public class AuthController {
 
     //Region: Refresh Token
     @PostMapping("/refresh-token")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> refreshToken(
-            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>> refreshToken(
+            @Valid @RequestBody com.learning.userservice.userservice.dto.request.RefreshTokenRequest refreshTokenRequest) {
         try {
             return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest.getRefreshToken()));
         } catch (ResponseStatusException e) {
             log.error("Token refresh failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(e.getStatusCode()).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message(e.getReason())
                     .build());
         } catch (Exception e) {
             log.error("Unexpected error during token refresh: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<AuthenticationResponse>builder()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(com.learning.realtimechatappbackend.userservice.dto.response.ApiResponse.<com.learning.realtimechatappbackend.userservice.dto.response.AuthenticationResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());

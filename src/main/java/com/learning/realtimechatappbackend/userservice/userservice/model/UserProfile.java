@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.model;
+package com.learning.realtimechatappbackend.userservice.userservice.model;
 
 import java.time.Instant;
 import java.time.LocalDate;

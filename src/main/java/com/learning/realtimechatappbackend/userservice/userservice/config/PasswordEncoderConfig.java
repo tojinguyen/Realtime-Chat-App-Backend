@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.config;
+package com.learning.realtimechatappbackend.userservice.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,3 +12,4 @@ public class PasswordEncoderConfig {
         return new BCryptPasswordEncoder();
     }
 }
+

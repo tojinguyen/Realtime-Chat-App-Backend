@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.model;
+package com.learning.realtimechatappbackend.userservice.userservice.model;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class UserAddress {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserProfile userProfile;
+    private com.learning.realtimechatappbackend.userservice.model.UserProfile userProfile;
 
     @Column(name = "street", nullable = false)
     private String street;
@@ -47,7 +47,7 @@ public class UserAddress {
     private String country;
 
     // Constructor for creating an address with a profile
-    public UserAddress(UserProfile userProfile, String street, String city, String state, String postalCode) {
+    public UserAddress(com.learning.realtimechatappbackend.userservice.model.UserProfile userProfile, String street, String city, String state, String postalCode) {
         this.userProfile = userProfile;
         this.street = street;
         this.city = city;
@@ -57,8 +57,8 @@ public class UserAddress {
     }
 
     // Constructor for creating an address with a profile and country
-    public UserAddress(UserProfile userProfile, String street, String city, String state, String postalCode,
-            String country) {
+    public UserAddress(com.learning.realtimechatappbackend.userservice.model.UserProfile userProfile, String street, String city, String state, String postalCode,
+                       String country) {
         this.userProfile = userProfile;
         this.street = street;
         this.city = city;
@@ -68,7 +68,7 @@ public class UserAddress {
     }
 
     // Constructor for updating an address (used in updateProfile method)
-    public UserAddress(String street, String city, String state, String postalCode, UserProfile userProfile) {
+    public UserAddress(String street, String city, String state, String postalCode, com.learning.realtimechatappbackend.userservice.model.UserProfile userProfile) {
         this.street = street;
         this.city = city;
         this.state = state;

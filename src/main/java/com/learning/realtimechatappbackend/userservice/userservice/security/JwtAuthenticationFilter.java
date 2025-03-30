@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.security;
+package com.learning.realtimechatappbackend.userservice.userservice.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtUtils jwtUtil;
+    private com.learning.realtimechatappbackend.userservice.security.JwtUtils jwtUtil;
 
     private UserDetailsService userDetailsService;
 

@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.dto.request;
+package com.learning.realtimechatappbackend.userservice.userservice.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

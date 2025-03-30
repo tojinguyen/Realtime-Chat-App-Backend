@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.service;
+package com.learning.realtimechatappbackend.userservice.userservice.service;
 
 import com.learning.userservice.userservice.enums.VerificationType;
 import com.learning.userservice.userservice.model.VerificationCode;

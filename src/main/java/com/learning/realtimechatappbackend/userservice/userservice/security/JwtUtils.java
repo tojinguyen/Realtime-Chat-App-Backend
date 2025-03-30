@@ -1,6 +1,6 @@
-package com.learning.realtimechatappbackend.userservice.security;
+package com.learning.realtimechatappbackend.userservice.userservice.security;
 
-import com.learning.userservice.userservice.model.UserAccount;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.dto.response;
+package com.learning.realtimechatappbackend.userservice.userservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.learning.userservice.userservice.config;
+package com.learning.realtimechatappbackend.userservice.userservice.config;
 
 import java.util.Properties;
 

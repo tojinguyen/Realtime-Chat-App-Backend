@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.service;
+package com.learning.realtimechatappbackend.userservice.userservice.service;
 
 import java.time.Instant;
 import java.util.stream.Collectors;

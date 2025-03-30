@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.service;
+package com.learning.realtimechatappbackend.userservice.userservice.service;
 
 import java.time.Instant;
 import java.util.Date;
@@ -39,7 +39,7 @@ public class AuthService {
 
     private final JwtUtils jwtTokenProvider;
 
-    private final VerificationCodeService verificationCodeService;
+    private final com.learning.realtimechatappbackend.userservice.service.VerificationCodeService verificationCodeService;
 
     private final BaseRedisService baseRedisService;
 
