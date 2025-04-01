@@ -1,4 +1,4 @@
-package com.learning.realtimechatappbackend.userservice.model;
+package com.learning.realtimechatappbackend.userservice.userservice.model;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,11 +16,12 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user_profiles")

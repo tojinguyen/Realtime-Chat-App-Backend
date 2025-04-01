@@ -2,7 +2,6 @@ package com.learning.realtimechatappbackend.userservice.userservice.service;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.learning.realtimechatappbackend.userservice.redisservice.service.BaseRedisService;

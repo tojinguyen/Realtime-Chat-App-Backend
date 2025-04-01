@@ -16,5 +16,5 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Username is required")
-    private String firstName;
+    private String fullName;
 }
