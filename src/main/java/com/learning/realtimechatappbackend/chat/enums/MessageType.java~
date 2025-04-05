@@ -1,0 +1,4 @@
+package com.learning.realtimechatappbackend.chat.enums;
+
+public class MessageType {
+}

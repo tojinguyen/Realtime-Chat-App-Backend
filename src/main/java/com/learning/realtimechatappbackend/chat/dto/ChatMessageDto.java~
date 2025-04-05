@@ -1,0 +1,14 @@
+package com.learning.realtimechatappbackend.chat.dto;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChatMessage {
+    private String senderId;
+    private String receiverId;
+    private String conversationId;
+    private String content;
+    private String type; // TEXT, IMAGE, FILE,...
+    private LocalDateTime sentAt;
+}
+

@@ -1,0 +1,4 @@
+package com.learning.realtimechatappbackend.userservice.userservice.config;
+
+public class WebSocketConfig {
+}
