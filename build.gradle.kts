@@ -55,6 +55,7 @@ dependencies {
     implementation("jakarta.mail:jakarta.mail-api:2.0.0")
     implementation("redis.clients:jedis:4.2.3")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 }
 
 dependencyManagement {
