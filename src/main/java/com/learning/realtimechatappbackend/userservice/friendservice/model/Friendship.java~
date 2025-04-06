@@ -1,0 +1,37 @@
+package com.learning.realtimechatappbackend.friendservice.model;
+
+import com.learning.realtimechatappbackend.userservice.friendservice.enums.FriendshipStatus;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.Instant;
+
+@Entity
+@Table(name = "friendships")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Friendship {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @Column(nullable = false)
+    private String requesterId;
+
+    @Column(nullable = false)
+    private String addresseeId;
+
+    @Enumerated(EnumType.STRING)
+    private FriendshipStatus status;
+
+    @Column(nullable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+}

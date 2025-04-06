@@ -1,0 +1,4 @@
+package com.learning.realtimechatappbackend.userservice.friendservice.dto;
+
+public class FriendRequestDto {
+}

@@ -1,0 +1,19 @@
+package com.learning.realtimechatappbackend.userservice.friendservice.dto;
+
+import com.learning.realtimechatappbackend.userservice.friendservice.enums.FriendshipStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FriendshipDto {
+    private String id;
+    private String requesterId;
+    private String addresseeId;
+    private String requesterName;
+    private String addresseeName;
+    private FriendshipStatus status;
+    private String createdAt;
+}

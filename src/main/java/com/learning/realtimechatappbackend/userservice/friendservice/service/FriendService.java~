@@ -1,0 +1,231 @@
+package com.learning.realtimechatappbackend.userservice.friendservice.service;
+
+import com.learning.realtimechatappbackend.userservice.friendservice.model.Friendship;
+import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
+import com.learning.realtimechatappbackend.userservice.userservice.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class FriendService {
+
+    private final FriendshipRepository friendshipRepository;
+    private final AccountRepository accountRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public UserSearchDto searchUserByEmail(String email, String currentUserId) {
+        UserAccount user = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Don't return the current user in search results
+        if (user.getUserId().equals(currentUserId)) {
+            throw new RuntimeException("Cannot search for yourself");
+        }
+
+        boolean isFriend = false;
+        String friendshipStatus = null;
+
+        // Check if there's an existing friendship
+        var friendship = friendshipRepository.findByUserIdAndFriendId(currentUserId, user.getUserId());
+        if (friendship.isPresent()) {
+            friendshipStatus = friendship.get().getStatus().toString();
+            isFriend = friendship.get().getStatus() == FriendshipStatus.ACCEPTED;
+        }
+
+        return new UserSearchDto(
+                user.getUserId(),
+                user.getEmail(),
+                user.getFullName(),
+                isFriend,
+                friendshipStatus
+        );
+    }
+
+    @Transactional
+    public FriendshipDto sendFriendRequest(String requesterId, FriendRequestDto friendRequest) {
+        String addresseeId = friendRequest.getAddresseeId();
+
+        // Check if users exist
+        UserAccount requester = accountRepository.findByUserId(requesterId)
+                .orElseThrow(() -> new RuntimeException("Requester not found"));
+
+        UserAccount addressee = accountRepository.findByUserId(addresseeId)
+                .orElseThrow(() -> new RuntimeException("Addressee not found"));
+
+        // Check if there's already a friendship between these users
+        var existingFriendship = friendshipRepository.findByUserIdAndFriendId(requesterId, addresseeId);
+        if (existingFriendship.isPresent()) {
+            Friendship friendship = existingFriendship.get();
+
+            if (friendship.getStatus() == FriendshipStatus.ACCEPTED) {
+                throw new RuntimeException("You are already friends");
+            }
+
+            if (friendship.getStatus() == FriendshipStatus.PENDING) {
+                if (friendship.getRequesterId().equals(requesterId)) {
+                    throw new RuntimeException("Friend request already sent");
+                } else {
+                    // If the addressee had previously sent a request to the requester,
+                    // we automatically accept it
+                    friendship.setStatus(FriendshipStatus.ACCEPTED);
+                    friendship.setUpdatedAt(Instant.now());
+                    friendshipRepository.save(friendship);
+
+                    // Send notification to both users
+                    sendFriendshipNotification(friendship);
+                    return mapToFriendshipDto(friendship, requester, addressee);
+                }
+            }
+
+            // For REJECTED or BLOCKED status, allow sending a new request
+            friendship.setStatus(FriendshipStatus.PENDING);
+            friendship.setRequesterId(requesterId);
+            friendship.setAddresseeId(addresseeId);
+            friendship.setUpdatedAt(Instant.now());
+            friendshipRepository.save(friendship);
+
+            // Send notification
+            sendFriendshipNotification(friendship);
+            return mapToFriendshipDto(friendship, requester, addressee);
+        }
+
+        // Create new friendship
+        Friendship friendship = new Friendship();
+        friendship.setRequesterId(requesterId);
+        friendship.setAddresseeId(addresseeId);
+        friendship.setStatus(FriendshipStatus.PENDING);
+        Instant now = Instant.now();
+        friendship.setCreatedAt(now);
+        friendship.setUpdatedAt(now);
+
+        friendship = friendshipRepository.save(friendship);
+
+        // Send notification to addressee about new friend request
+        sendFriendshipNotification(friendship);
+
+        return mapToFriendshipDto(friendship, requester, addressee);
+    }
+
+    @Transactional
+    public FriendshipDto respondToFriendRequest(String userId, String friendshipId, boolean accept) {
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new RuntimeException("Friend request not found"));
+
+        // Ensure the current user is the addressee
+        if (!friendship.getAddresseeId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to respond to this request");
+        }
+
+        // Ensure the friendship is in PENDING status
+        if (friendship.getStatus() != FriendshipStatus.PENDING) {
+            throw new RuntimeException("This request is not pending");
+        }
+
+        // Update the status based on the response
+        friendship.setStatus(accept ? FriendshipStatus.ACCEPTED : FriendshipStatus.REJECTED);
+        friendship.setUpdatedAt(Instant.now());
+        friendship = friendshipRepository.save(friendship);
+
+        // Find requester and addressee details for the response DTO
+        UserAccount requester = accountRepository.findByUserId(friendship.getRequesterId())
+                .orElseThrow(() -> new RuntimeException("Requester not found"));
+
+        UserAccount addressee = accountRepository.findByUserId(friendship.getAddresseeId())
+                .orElseThrow(() -> new RuntimeException("Addressee not found"));
+
+        // Send notification to both users
+        sendFriendshipNotification(friendship);
+
+        return mapToFriendshipDto(friendship, requester, addressee);
+    }
+
+    public List<FriendshipDto> getPendingRequests(String userId) {
+        return friendshipRepository.findByAddresseeIdAndStatus(userId, FriendshipStatus.PENDING)
+                .stream()
+                .map(friendship -> {
+                    UserAccount requester = accountRepository.findByUserId(friendship.getRequesterId())
+                            .orElseThrow(() -> new RuntimeException("Requester not found"));
+
+                    UserAccount addressee = accountRepository.findByUserId(friendship.getAddresseeId())
+                            .orElseThrow(() -> new RuntimeException("Addressee not found"));
+
+                    return mapToFriendshipDto(friendship, requester, addressee);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<UserSearchDto> getFriends(String userId) {
+        return friendshipRepository.findAllAcceptedFriendships(userId)
+                .stream()
+                .map(friendship -> {
+                    String friendId = friendship.getRequesterId().equals(userId)
+                            ? friendship.getAddresseeId()
+                            : friendship.getRequesterId();
+
+                    UserAccount friend = accountRepository.findByUserId(friendId)
+                            .orElseThrow(() -> new RuntimeException("Friend not found"));
+
+                    return new UserSearchDto(
+                            friend.getUserId(),
+                            friend.getEmail(),
+                            friend.getFullName(),
+                            true,
+                            FriendshipStatus.ACCEPTED.toString()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    private void sendFriendshipNotification(Friendship friendship) {
+        // Send to requester
+        messagingTemplate.convertAndSend(
+                "/topic/user/" + friendship.getRequesterId() + "/friendship",
+                mapToNotificationDto(friendship)
+        );
+
+        // Send to addressee
+        messagingTemplate.convertAndSend(
+                "/topic/user/" + friendship.getAddresseeId() + "/friendship",
+                mapToNotificationDto(friendship)
+        );
+    }
+
+    private FriendshipDto mapToFriendshipDto(Friendship friendship, UserAccount requester, UserAccount addressee) {
+        return new FriendshipDto(
+                friendship.getId(),
+                requester.getUserId(),
+                addressee.getUserId(),
+                requester.getFullName(),
+                addressee.getFullName(),
+                friendship.getStatus(),
+                friendship.getCreatedAt().toString()
+        );
+    }
+
+    private FriendshipDto mapToNotificationDto(Friendship friendship) {
+        UserAccount requester = accountRepository.findByUserId(friendship.getRequesterId())
+                .orElseThrow(() -> new RuntimeException("Requester not found"));
+
+        UserAccount addressee = accountRepository.findByUserId(friendship.getAddresseeId())
+                .orElseThrow(() -> new RuntimeException("Addressee not found"));
+
+        return new FriendshipDto(
+                friendship.getId(),
+                requester.getUserId(),
+                addressee.getUserId(),
+                requester.getFullName(),
+                addressee.getFullName(),
+                friendship.getStatus(),
+                friendship.getCreatedAt().toString()
+        );
+    }
+}

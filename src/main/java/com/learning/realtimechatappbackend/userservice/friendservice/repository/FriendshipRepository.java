@@ -1,0 +1,22 @@
+package com.learning.realtimechatappbackend.userservice.friendservice.repository;
+
+import com.learning.realtimechatappbackend.userservice.friendservice.enums.FriendshipStatus;
+import com.learning.realtimechatappbackend.userservice.friendservice.model.Friendship;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface FriendshipRepository extends JpaRepository<Friendship, String> {
+
+    @Query("SELECT f FROM Friendship f WHERE (f.requesterId = :userId AND f.addresseeId = :friendId) OR (f.requesterId = :friendId AND f.addresseeId = :userId)")
+    Optional<Friendship> findByUserIdAndFriendId(String userId, String friendId);
+
+    List<Friendship> findByRequesterIdAndStatus(String requesterId, FriendshipStatus status);
+
+    List<Friendship> findByAddresseeIdAndStatus(String addresseeId, FriendshipStatus status);
+
+    @Query("SELECT f FROM Friendship f WHERE (f.requesterId = :userId OR f.addresseeId = :userId) AND f.status = 'ACCEPTED'")
+    List<Friendship> findAllAcceptedFriendships(String userId);
+}
