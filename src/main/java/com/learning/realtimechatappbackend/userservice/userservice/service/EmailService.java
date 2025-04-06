@@ -14,8 +14,9 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     public void sendVerificationEmail(String email, String code) {
-        var message = mailSender.createMimeMessage();
         try {
+            log.debug("Sending verification email to {}", mailSender == null ? "null" : mailSender.toString());
+            var message = mailSender.createMimeMessage();
             var helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
             helper.setSubject("Verify Your Account");

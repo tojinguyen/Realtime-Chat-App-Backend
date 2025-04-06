@@ -20,7 +20,6 @@ import javax.validation.Valid;
 public class AuthController {
     private final AuthService authService;
 
-    @CrossOrigin
     //Region:  Register
     @PostMapping("/send-register-code")
     public ResponseEntity<ApiResponse<SendRegisterVerifyCodeResponse>> sendVerificationCode(
