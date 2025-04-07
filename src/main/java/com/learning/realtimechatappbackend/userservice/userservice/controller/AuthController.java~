@@ -16,6 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 @Slf4j
 @AllArgsConstructor
+@CrossOrigin
 public class AuthController {
     private final AuthService authService;
 
@@ -178,28 +179,6 @@ public class AuthController {
         } catch (Exception e) {
             log.error("Unexpected error during token refresh: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<AuthenticationResponse>builder()
-                    .success(false)
-                    .message("An unexpected error occurred")
-                    .build());
-        }
-    }
-    //EndRegion
-
-    //Region: Verify Token
-    @GetMapping("/verify-token")
-    public ResponseEntity<ApiResponse<VerifyTokenResponse>> verifyToken(
-            @RequestHeader("Authorization") String token) {
-        try {
-            return ResponseEntity.ok(authService.verifyToken(token));
-        } catch (ResponseStatusException e) {
-            log.error("Token verification failed: {}", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode()).body(ApiResponse.<VerifyTokenResponse>builder()
-                    .success(false)
-                    .message(e.getReason())
-                    .build());
-        } catch (Exception e) {
-            log.error("Unexpected error during token verification: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<VerifyTokenResponse>builder()
                     .success(false)
                     .message("An unexpected error occurred")
                     .build());

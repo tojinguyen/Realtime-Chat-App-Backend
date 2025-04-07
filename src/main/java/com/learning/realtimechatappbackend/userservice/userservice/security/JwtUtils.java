@@ -55,6 +55,43 @@ public class JwtUtils {
         }
     }
 
+    // Validate token without user details
+    public boolean validateToken(String token) {
+        try {
+            if (token == null || token.isBlank()) {
+                return false;
+            }
+
+            // Remove 'Bearer ' prefix if present
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
+            // Parse and validate the token
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                .build()
+                .parseClaimsJws(token);
+
+            return true; // Token is valid if no exception is thrown
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT signature: {}", e.getMessage());
+            return false;
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+            return false;
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+            return false;
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
+            return false;
+        } catch (Exception e) {
+            log.error("JWT validation error: {}", e.getMessage());
+            return false;
+        }
+    }
+
     // Validate refresh token
     public boolean validateRefreshToken(String refreshToken) {
         try {

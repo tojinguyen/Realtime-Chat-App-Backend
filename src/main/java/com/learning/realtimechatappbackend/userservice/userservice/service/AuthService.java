@@ -11,6 +11,7 @@ import com.learning.realtimechatappbackend.userservice.userservice.dto.request.V
 import com.learning.realtimechatappbackend.userservice.userservice.dto.response.ApiResponse;
 import com.learning.realtimechatappbackend.userservice.userservice.dto.response.AuthenticationResponse;
 import com.learning.realtimechatappbackend.userservice.userservice.dto.response.ResetPasswordResponse;
+import com.learning.realtimechatappbackend.userservice.userservice.dto.response.VerifyTokenResponse;
 import com.learning.realtimechatappbackend.userservice.userservice.enums.VerificationType;
 import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
 import com.learning.realtimechatappbackend.userservice.userservice.repository.AccountRepository;
@@ -227,6 +228,55 @@ public class AuthService {
                     .success(false)
                     .message("An unexpected error occurred while refreshing token.")
                     .build();
+        }
+    }
+    // EndRegion
+
+    // Region: Verify Token
+    public ApiResponse<VerifyTokenResponse> verifyToken(String token) {
+        // Remove prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        // Check if token is blacklisted
+        if (baseRedisService.exists("blacklist:" + token)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
+        }
+
+        // Validate the token
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+        }
+
+        try {
+            // Extract user details from token
+            String email = jwtTokenProvider.extractUsername(token);
+            
+            // Look up user in database to get full details
+            var user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+            // Create response
+            var response = VerifyTokenResponse.builder()
+                    .valid(true)
+                    .userId(user.getUserId())
+                    .email(user.getEmail())
+                    .fullName(user.getFullName())
+                    .role(user.getRole())
+                    .build();
+
+            return ApiResponse.<VerifyTokenResponse>builder()
+                    .success(true)
+                    .message("Token is valid")
+                    .data(response)
+                    .build();
+
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error verifying token: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error verifying token");
         }
     }
     // EndRegion
