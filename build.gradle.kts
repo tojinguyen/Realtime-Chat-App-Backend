@@ -59,6 +59,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("com.sun.mail:javax.mail:1.6.2")
+    implementation("net.datafaker:datafaker:1.9.0")
 }
 
 dependencyManagement {

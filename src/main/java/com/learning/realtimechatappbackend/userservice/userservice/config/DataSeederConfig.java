@@ -1,0 +1,28 @@
+package com.learning.realtimechatappbackend.userservice.userservice.config;
+
+import com.learning.realtimechatappbackend.userservice.userservice.service.DataFakerService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+@Configuration
+@RequiredArgsConstructor
+@Slf4j
+public class DataSeederConfig {
+
+    private final DataFakerService dataFakerService;
+
+    @Bean
+    @Profile("data-seed") // Only run when this profile is active
+    public CommandLineRunner seedDatabase() {
+        return args -> {
+            log.info("Starting database seeding process with DataFaker");
+            // Generate 1 million users with a batch size of 5000
+            dataFakerService.seedUsers(1_000_000, 5000);
+            log.info("Database seeding complete");
+        };
+    }
+}
