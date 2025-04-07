@@ -78,3 +78,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    // Allow passing system properties from command line
+    systemProperties(System.getProperties().mapKeys { it.key.toString() })
+}

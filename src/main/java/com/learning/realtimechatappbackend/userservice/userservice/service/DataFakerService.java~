@@ -2,7 +2,6 @@ package com.learning.realtimechatappbackend.userservice.userservice.service;
 
 import com.learning.realtimechatappbackend.userservice.userservice.model.UserAccount;
 import com.learning.realtimechatappbackend.userservice.userservice.repository.AccountRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;

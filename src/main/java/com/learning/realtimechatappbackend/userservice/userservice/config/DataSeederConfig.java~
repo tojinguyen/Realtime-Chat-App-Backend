@@ -28,6 +28,6 @@ public class DataSeederConfig {
                 log.error("Error during seeding", e);
                 throw e; // Rethrow to ensure application exits properly
             }
-        };
+        }
     }
 }

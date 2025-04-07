@@ -11,13 +11,13 @@ jwt.secret=xJt89z8p0C1wQ5+H3aB4vE6kR2sT7mY1jLpNz0dSfW8=
 jwt.access-token-expiration=3600000
 jwt.refresh-token-expiration=2592000000
 
-#postgreql configuration data source
+#mysql configuration data source
 spring.datasource.url=jdbc:mysql://localhost:3306/user_account?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 spring.datasource.username=root
 spring.datasource.password=toai20102002
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
-spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=update
 
 
 #Email configuration
@@ -63,3 +63,12 @@ spring.kafka.bootstrap-servers=localhost:9092
 logging.level.org.apache.kafka=OFF
 
 
+# Add this to your application-data-seed.properties
+spring.jpa.properties.hibernate.jdbc.batch_size=5000
+spring.jpa.properties.hibernate.order_inserts=true
+spring.jpa.properties.hibernate.generate_statistics=false
+spring.jpa.properties.hibernate.jdbc.batch_versioned_data=true
+
+
+# Exit after seeding
+spring.main.web-application-type=none
