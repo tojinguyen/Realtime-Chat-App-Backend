@@ -239,8 +239,6 @@ public class AuthService {
             token = token.substring(7);
         }
 
-        log.info("Token: {}", token);
-
         // Check if token is blacklisted
         if (baseRedisService.exists("blacklist:" + token)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
@@ -254,7 +252,7 @@ public class AuthService {
         try {
             // Extract user details from token
             String email = jwtTokenProvider.extractUsername(token);
-
+            
             // Look up user in database to get full details
             var user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
