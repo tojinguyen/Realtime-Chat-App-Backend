@@ -234,25 +234,34 @@ public class AuthService {
 
     // Region: Verify Token
     public ApiResponse<VerifyTokenResponse> verifyToken(String token) {
-        // Remove prefix if present
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
 
-        // Check if token is blacklisted
-        if (baseRedisService.exists("blacklist:" + token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
-        }
-
-        // Validate the token
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
-        }
+        log.debug("Token: {}", token);
 
         try {
+            boolean isBlacklisted = false;
+            try {
+                isBlacklisted = baseRedisService.exists("blacklist:" + token);
+            } catch (Exception redisEx) {
+                // Log the Redis connection error but continue with token validation
+                log.error("Redis connection error while checking blacklisted token: {}", redisEx.getMessage());
+                // Optionally you can add metrics or alerts here for monitoring
+            }
+
+            if (isBlacklisted) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
+            }
+
+            // Validate the token
+            if (!jwtTokenProvider.validateToken(token)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+            }
+
             // Extract user details from token
             String email = jwtTokenProvider.extractUsername(token);
-            
+
             // Look up user in database to get full details
             var user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -275,7 +284,7 @@ public class AuthService {
         } catch (ResponseStatusException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Error verifying token: {}", e.getMessage());
+            log.error("Error verifying token: {}", e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error verifying token");
         }
     }

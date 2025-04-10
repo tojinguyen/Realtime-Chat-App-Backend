@@ -234,24 +234,29 @@ public class AuthService {
 
     // Region: Verify Token
     public ApiResponse<VerifyTokenResponse> verifyToken(String token) {
-        // Remove prefix if present
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
 
-        log.info("Token: {}", token);
-
-        // Check if token is blacklisted
-        if (baseRedisService.exists("blacklist:" + token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
-        }
-
-        // Validate the token
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
-        }
+        log.debug("Token: {}", token);
 
         try {
+            boolean isBlacklisted = false;
+            try {
+                isBlacklisted = baseRedisService.exists("blacklist:" + token);
+            } catch (Exception redisEx) {
+                log.error("Redis connection error while checking blacklisted token: {}", redisEx.getMessage());
+            }
+
+            if (isBlacklisted) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has been revoked");
+            }
+
+            // Validate the token
+            if (!jwtTokenProvider.validateToken(token)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+            }
+
             // Extract user details from token
             String email = jwtTokenProvider.extractUsername(token);
 
@@ -277,7 +282,7 @@ public class AuthService {
         } catch (ResponseStatusException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Error verifying token: {}", e.getMessage());
+            log.error("Error verifying token: {}", e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error verifying token");
         }
     }

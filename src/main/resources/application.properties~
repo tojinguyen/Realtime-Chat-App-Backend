@@ -37,7 +37,7 @@ spring.data.redis.database=0
 spring.data.redis.host=localhost
 spring.data.redis.port=6379
 spring.data.redis.timeout=60000
-spring.data.redis.password=toai20102002
+spring.data.redis.password=toai24042002
 
 
 # Additional debug settings
