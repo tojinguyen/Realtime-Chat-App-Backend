@@ -152,24 +152,67 @@ public class AuthService {
     // EndRegion
 
     // Region: Logout
-    public void logout(String token) {
-        // Remove prefix if present
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
+    public ApiResponse<Void> logout(String token) {
+        log.info("Processing logout request");
+        
+        try {
+            // Remove prefix if present
+            if (token == null || token.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is required");
+            }
+            
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            // Check if token is already blacklisted
+            if (baseRedisService.exists("blacklist:" + token)) {
+                log.info("Token is already blacklisted");
+                return ApiResponse.<Void>builder()
+                    .success(true)
+                    .message("User already logged out")
+                    .build();
+            }
+            
+            // Validate token
+            if (!jwtTokenProvider.validateToken(token)) {
+                log.warn("Invalid token provided for logout");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
+            }
+            
+            // Check token expiration
+            var expirationDate = jwtTokenProvider.getExpirationDateFromToken(token);
+            long ttlMillis = Date.from(expirationDate).getTime() - System.currentTimeMillis();
+            
+            if (ttlMillis <= 0) {
+                log.info("Token has already expired, no need to blacklist");
+                return ApiResponse.<Void>builder()
+                    .success(true)
+                    .message("Token already expired")
+                    .build();
+            }
+            
+            // Calculate TTL in seconds for Redis
+            long ttlSeconds = ttlMillis / 1000;
+            
+            // Add token to blacklist in Redis
+            baseRedisService.set("blacklist:" + token, "blacklisted", ttlSeconds);
+            log.info("Token has been successfully blacklisted with TTL: {} seconds", ttlSeconds);
+            
+            return ApiResponse.<Void>builder()
+                .success(true)
+                .message("Logged out successfully")
+                .build();
+                
+        } catch (ResponseStatusException e) {
+            // Re-throw existing ResponseStatusExceptions
+            throw e;
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            log.error("Error during logout: {}", e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                "An error occurred during logout");
         }
-
-//        if (!jwtTokenProvider.validateToken(token)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
-//        }
-
-        var expirationDate = jwtTokenProvider.getExpirationDateFromToken(token);
-        long ttl = Date.from(expirationDate).getTime() - System.currentTimeMillis();
-        if (ttl <= 0) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired.");
-        }
-
-        baseRedisService.set("blacklist:" + token, "blacklisted", ttl / 1000);
-        log.info("Token {} has been blacklisted", token);
     }
     // EndRegion
 
@@ -288,3 +331,4 @@ public class AuthService {
     }
     // EndRegion
 }
+
